@@ -1,6 +1,6 @@
 # Distributed Programming II (A.Y. 2015/16)
+
 Assignments of Distributed Programming II - Year 2015/2016
-======================================================
 
 Each solution has been deployed using IntelliJ IDEA 15.0.2 but for the exam
 must be used Eclipse Luna. Java 7 has been used.
