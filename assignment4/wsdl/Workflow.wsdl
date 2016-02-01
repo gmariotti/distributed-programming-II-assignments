@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:tns="http://www.example.org/Workflow/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Workflow"
+	targetNamespace="http://www.example.org/Workflow/">
+
+	<!-- Types -->
+	<wsdl:types>
+		<xsd:schema>
+			<xsd:import namespace="http://www.example.org/Workflow/"
+				schemaLocation="schema.xsd"/>
+		</xsd:schema>
+	</wsdl:types>
+
+	<!-- Messages for point 1 -->
+	<wsdl:message name="workflowInfo">
+		<wsdl:part element="tns:workflowInfo" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="workflowInfoResponse">
+		<wsdl:part element="tns:workflowInfoResponse" name="parameters" />
+	</wsdl:message>
+	<!-- Messages for point 2 -->
+	<wsdl:message name="newProcesses">
+		<wsdl:part element="tns:newProcesses" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="newProcessesResponse">
+		<wsdl:part element="tns:newProcessesResponse" name="parameters" />
+	</wsdl:message>
+	<!-- Messages for point 3 -->
+	<wsdl:message name="takeAction">
+		<wsdl:part element="tns:takeAction" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="takeActionResponse">
+		<wsdl:part element="tns:takeActionResponse" name="parameters" />
+	</wsdl:message>
+	<!-- Messages for point 4 -->
+	<wsdl:message name="completeAction">
+		<wsdl:part element="tns:completeAction" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="completeActionResponse">
+		<wsdl:part element="tns:completeActionResponse" name="parameters" />
+	</wsdl:message>
+	<wsdl:message name="fault">
+		<wsdl:part name="parameters" element="tns:fault" />
+	</wsdl:message>
+
+	<!-- Port -->
+    <wsdl:portType name="WorkflowServicePortType">
+        <!-- Point 1 -->
+        <wsdl:documentation>
+            WorkflowInfo is used to ask the list of Workflow and Processes.
+            Fault in case of error in the server side.
+
+            NewProcesses is used to create a new process and all the automatically instantiated actions given a list
+            of Workflow names as parameters. For security reason, is required the SHA-256 digest of the password and
+            the seed used to generate this password.
+            Fault if the wrong data are passed.
+
+            TakeAction is used to assign an actor to a Process. It required a ProcessID, the name of the Action and the
+            Actor. Returns the success or not of the operation and the corresponding timestamp.
+            Fault if wrong data are passed.
+
+            CompleteAction is used to complete an action of an active process. It requires a ProcessID and the Action name.
+            Returns the success or not of the operation and the corresponding timestamp.
+            Fault if wrong data are passed.
+        </wsdl:documentation>
+        <wsdl:operation name="workflowInfo">
+            <wsdl:input message="tns:workflowInfo" />
+            <wsdl:output message="tns:workflowInfoResponse" />
+            <wsdl:fault name="fault" message="tns:fault" />
+        </wsdl:operation>
+        <!-- Point 2 -->
+        <wsdl:operation name="newProcesses">
+            <wsdl:input message="tns:newProcesses" />
+            <wsdl:output message="tns:newProcessesResponse" />
+            <wsdl:fault name="fault" message="tns:fault" />
+        </wsdl:operation>
+        <!-- Point 3 -->
+        <wsdl:operation name="takeAction">
+            <wsdl:input message="tns:takeAction" />
+            <wsdl:output message="tns:takeActionResponse" />
+            <wsdl:fault name="fault" message="tns:fault" />
+        </wsdl:operation>
+        <!-- Point 4 -->
+        <wsdl:operation name="completeAction">
+            <wsdl:input message="tns:completeAction" />
+            <wsdl:output message="tns:completeActionResponse" />
+            <wsdl:fault name="fault" message="tns:fault" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+	<!-- Binding -->
+    <wsdl:binding name="WorkflowServicePortBinding" type="tns:WorkflowServicePortType">
+        <soap:binding style="document"
+                      transport="http://schemas.xmlsoap.org/soap/http" />
+        <!-- Point 1 -->
+        <wsdl:operation name="workflowInfo">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <!-- Point 2 -->
+        <wsdl:operation name="newProcesses">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <!-- Point 3 -->
+        <wsdl:operation name="takeAction">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <!-- Point 4 -->
+        <wsdl:operation name="completeAction">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="fault">
+                <soap:fault name="fault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+	<!-- Service -->
+	<wsdl:service name="WorkflowServiceService">
+		<wsdl:port name="WorkflowServicePort" binding="tns:WorkflowServicePortBinding">
+			<soap:address location="http://localhost:7071/wfinfo"/>
+            <soap:address location="http://localhost:7070/wfcontrol" />
+        </wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

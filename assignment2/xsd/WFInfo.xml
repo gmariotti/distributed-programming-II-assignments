@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WFInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="WFInfo.xsd">
+    <!--Zero or more repetitions: -->
+    <workflow name="NormalSale">
+        <!--1 or more repetitions: -->
+        <action name="GoodsDelivery" role="Warehouseman" autIns="true">
+            <simple/>
+        </action>
+        <action name="InvoiceIssuance" role="AccountingMan" autIns="true">
+            <simple>
+                <nextAction next="PaymentRec"/>
+                <nextAction next="GoodsDelivery"/>
+            </simple>
+        </action>
+        <action name="PaymentRec" role="AccountingMan" autIns="false">
+            <simple/>
+        </action>
+        <!--1 or more repetitions: -->
+        <process>
+            <startTime>2007-10-26T08:36:28</startTime>
+            <!--1 or more repetitions: -->
+            <status actionName="GoodsDelivery">
+                <actor>Actor1</actor>
+                <endTime>2004-02-14T19:44:14</endTime>
+            </status>
+            <status actionName="GoodsDelivery">
+                <actor>Actor1</actor>
+                <endTime>2004-02-14T19:44:14</endTime>
+            </status>
+        </process>
+    </workflow>
+
+    <workflow name="SaleManagement">
+        <action name="PrepaidSale" autIns="true" role="Salesman">
+            <process nextWorkflow="NormalSale"/>
+        </action>
+        <action name="NormalSale" autIns="true" role="SalesManager">
+            <simple/>
+        </action>
+        <process>
+            <startTime>2007-10-26T08:36:28</startTime>
+            <status actionName="PrepaidSale">
+                <actor>Actor1</actor>
+                <endTime>2007-10-26T08:36:28</endTime>
+            </status>
+            <status actionName="NormalSale"/>
+        </process>
+    </workflow>
+</WFInfo>

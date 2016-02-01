@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0"
+            elementFormDefault="qualified">
+
+    <xsd:annotation>
+        <xsd:appinfo>
+            <!-- Used to map a dateTime element with a Calendar java object -->
+            <jaxb:globalBindings>
+                <jaxb:javaType name="java.util.Calendar" xmlType="xsd:dateTime"
+                               parseMethod="javax.xml.bind.DatatypeConverter.parseDateTime"
+                               printMethod="javax.xml.bind.DatatypeConverter.printDateTime"/>
+            </jaxb:globalBindings>
+        </xsd:appinfo>
+    </xsd:annotation>
+
+    <xsd:element name="WFInfo">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="workflow" type="Workflow" maxOccurs="unbounded"
+                             minOccurs="0">
+                    <xsd:key name="ActionIdent">
+                        <xsd:selector xpath="action"/>
+                        <xsd:field xpath="@name"/>
+                    </xsd:key>
+                    <xsd:keyref name="StatusActionRef" refer="ActionIdent">
+                        <xsd:selector xpath="process/status"/>
+                        <xsd:field xpath="@actionName"/>
+                    </xsd:keyref>
+                    <xsd:keyref name="SimpleActionRef" refer="ActionIdent">
+                        <xsd:selector xpath="action/simple/nextAction"/>
+                        <xsd:field xpath="@next"/>
+                    </xsd:keyref>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:unique name="WorkflowIdent">
+            <xsd:selector xpath="workflow"/>
+            <xsd:field xpath="@name"/>
+        </xsd:unique>
+        <xsd:keyref name="ProcessNextWorkflow" refer="WorkflowIdent">
+            <xsd:selector xpath="workflow/action/process"/>
+            <xsd:field xpath="@NextWorkflow"/>
+        </xsd:keyref>
+    </xsd:element>
+
+    <xsd:complexType name="Workflow">
+        <xsd:sequence>
+            <xsd:element name="action" type="Action" maxOccurs="unbounded"/>
+            <xsd:element name="process" type="ProcessEl" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute ref="name" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="Action">
+        <xsd:choice>
+            <xsd:element name="simple" type="SimpleAction"/>
+            <xsd:element name="process" type="ProcessAction"/>
+        </xsd:choice>
+        <xsd:attribute ref="name" use="required"/>
+        <xsd:attribute name="role" type="xsd:string" use="required"/>
+        <xsd:attribute name="autIns" type="xsd:boolean" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="SimpleAction">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="nextAction" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="next" type="xsd:string" use="required"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ProcessAction">
+        <xsd:attribute name="nextWorkflow" type="xsd:string"
+                       use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ProcessEl">
+        <xsd:sequence>
+            <xsd:element name="startTime" type="xsd:dateTime"/>
+            <xsd:element name="status" type="Status" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Status">
+        <xsd:sequence>
+            <xsd:element name="actor" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="endTime" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+        <xsd:attribute name="actionName" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <!-- Specifies a name without number and whitespace -->
+    <xsd:attribute name="name">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string">
+                <xsd:pattern value="[^\s0-9]+"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:attribute>
+</xsd:schema>

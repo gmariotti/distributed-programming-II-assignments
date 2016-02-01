@@ -1,0 +1,23 @@
+Distributed Programming II (A.Y. 2015/16)
+======================================================
+
+Assignment n. 2
+------------------------
+
+This archive contains:
+
+- README            This file
+
+- Assignment2a.pdf  The text of assignment 2 - Part a
+
+- Assignment2b.pdf  The text of assignment 2 - Part b
+
+- build.xml         Ant file to build and run your code
+
+- xsd               The directory where you must put your xsd file
+
+- lib               A directory containing of the jars needed for this
+                    assignment
+
+- src               The directory where you must put your code and where
+                    you can find the sources provided with the assignment

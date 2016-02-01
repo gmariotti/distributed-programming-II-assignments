@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<!DOCTYPE information SYSTEM "wfInfo.dtd">
+<information>
+    <workflows>
+        <workflow name="NormalSale">
+            <action name="GoodsDelivery" role="Warehouseman" autins="true">
+                <simpleAc/>
+            </action>
+            <action name="InvoiceIssuance" role="AccountingMan" autins="true">
+                <simpleAc next="PaymentRec"/>
+            </action>
+            <action name="PaymentRec" role="AccountingMan" autins="false">
+                <simpleAc/>
+            </action>
+        </workflow>
+
+        <workflow name="SaleManagement">
+            <action name="PrepaidSale" role="Salesman" autins="true">
+                <processAc workflow="NormalSale"/>
+            </action>
+            <action name="NormalSale" role="SalesManager" autins="true">
+                <simpleAc/>
+            </action>
+        </workflow>
+    </workflows>
+
+    <processes>
+        <process workflow="SaleManagement">
+            <starttime>17/10/2015T22:01zCEST</starttime>
+            <status action="PrepaidSale" actor="Actor1">
+                <endtime>17/10/2015T22:01zCEST </endtime>
+            </status>
+            <status action="NormalSale" actor="Actor2"/>
+        </process>
+
+        <process workflow="NormalSale">
+            <starttime>17/10/2015T22:01zCEST</starttime>
+            <status action="GoodsDelivery" actor="Actor3">
+                <endtime>17/10/2015T22:01zCEST </endtime>
+            </status>
+            <status action="InvoiceIssuance" actor="Actor4">
+                <endtime>17/10/2015T22:01zCEST</endtime>
+            </status>
+            <status action="PaymentRec"/>
+        </process>
+    </processes>
+</information>

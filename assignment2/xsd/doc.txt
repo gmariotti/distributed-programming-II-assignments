@@ -1,0 +1,17 @@
+Each Workflow element has its list of Action and the list of Process that has instantiated the Workflow.
+
+The name of the Workflow is unique inside the document, while the name of an Action is unique
+inside each Workflow. Using keyref element, each Process Action refers to a Workflow element,
+while inside the Workflow element there is a keyref that connect an Action name with an
+ActionStatus name, and a keyref that connect an Action name to the value of a NextAction element
+inside a SimpleAction.
+
+An Action has a Simple element or a Process element, not both.
+A Simple element can have multiple NextAction element, referring to multiple Action inside
+a Workflow.
+A ProcessAction element has a single attribute referring to a Workflow in the document.
+
+A Process is named ProcessEl, always has a start time element and have 1 or more status element.
+
+To avoid the convertion of xsd:dateTime to XMLGregorianCalendar, is used a binding that convert
+xsd:dateTime to Calendar.

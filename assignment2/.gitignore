@@ -1,0 +1,8 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea/
+/xsd/out1.xml.lnk
+build/
+/lab2.zip
+generated/
+*.iml
+/src/it/polito/dp2/WF/sol2/jaxb

@@ -1,0 +1,16 @@
+The Information element is represented by two elements, a Workflows element, that contains
+0 or more Workflow elements, and a Processes element, that contains 0 or more Process element.
+
+Each Workflow element has a name, that must be an ID inside the document, and one or more
+Action elements that define him.
+Each Action element can be a SimpleAction or a ProcessAction, so can have only one element between 
+SimpleAc and ProcessAc.
+SimpleAc contains, as attribute, the list of Actions, while ProcessAc has, as attribute, the
+next Workflow name as a IDREF.
+
+Each Process element must have a StartTime element and one or more Status element, while the
+attribute Workflow is an IDREF of a Workflow in the document.
+Each Status element can have an EndTime element, must have an Action name to which it refers
+and can have an Actor name.
+
+Both StartTime and EndTime element are managed by code. 

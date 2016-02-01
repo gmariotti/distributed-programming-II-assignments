@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:tns="http://www.example.org/Workflow/" targetNamespace="http://www.example.org/Workflow/"
+            elementFormDefault="qualified">
+
+    <xsd:element name="workflowInfo" type="tns:workflowInfo"/>
+    <xsd:element name="workflowInfoResponse" type="tns:workflowInfoResponse"/>
+    <xsd:element name="newProcesses" type="tns:newProcesses"/>
+    <xsd:element name="newProcessesResponse" type="tns:newProcessesResponse"/>
+    <xsd:element name="takeAction" type="tns:takeAction"/>
+    <xsd:element name="takeActionResponse" type="tns:takeActionResponse"/>
+    <xsd:element name="completeAction" type="tns:completeAction"/>
+    <xsd:element name="completeActionResponse" type="tns:completeActionResponse"/>
+    <xsd:element name="fault" type="tns:fault"/>
+
+    <xsd:complexType name="workflowInfo">
+        <xsd:sequence></xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="workflowInfoResponse">
+        <xsd:sequence>
+            <xsd:element name="workflows">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="workflow" type="tns:Workflow" maxOccurs="unbounded" minOccurs="0">
+                            <xsd:key name="ActionIdent">
+                                <xsd:selector xpath="tns:action"/>
+                                <xsd:field xpath="tns:name"/>
+                            </xsd:key>
+                            <xsd:keyref name="StatusActionRef" refer="tns:ActionIdent">
+                                <xsd:selector xpath="tns:process/tns:status"/>
+                                <xsd:field xpath="tns:name"/>
+                            </xsd:keyref>
+                            <xsd:keyref name="SimpleActionRef" refer="tns:ActionIdent">
+                                <xsd:selector xpath="tns:action/tns:simple/tns:nextAction"/>
+                                <xsd:field xpath="@next"/>
+                            </xsd:keyref>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+                <xsd:unique name="WorkflowIdent">
+                    <xsd:selector xpath="tns:workflow"/>
+                    <xsd:field xpath="@name"/>
+                </xsd:unique>
+                <xsd:unique name="ProcessID">
+                    <xsd:selector xpath="tns:workflow/tns:process"/>
+                    <xsd:field xpath="@id"/>
+                </xsd:unique>
+                <xsd:keyref name="ProcessNextWorkflow" refer="tns:WorkflowIdent">
+                    <xsd:selector xpath="tns:workflow/tns:action/tns:process"/>
+                    <xsd:field xpath="@NextWorkflow"/>
+                </xsd:keyref>
+            </xsd:element>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="newProcesses">
+        <xsd:sequence>
+            <xsd:element name="digest" type="xsd:string"/>
+            <xsd:element name="seed" type="xsd:string"/>
+            <xsd:element name="processWorkflow" type="xsd:string"
+                         maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="newProcessesResponse">
+        <xsd:sequence>
+            <xsd:element name="processWorkflowID" type="xsd:string"
+                         maxOccurs="unbounded"/>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="takeAction">
+        <xsd:sequence>
+            <xsd:element name="processWorkflowID" type="xsd:string"/>
+            <xsd:element name="actionName" type="xsd:string"/>
+            <xsd:element name="actor">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="actorName" type="xsd:string"/>
+                        <xsd:element name="actorRole" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="takeActionResponse">
+        <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="completeAction">
+        <xsd:sequence>
+            <xsd:element name="processWorkflowID" type="xsd:string"/>
+            <xsd:element name="actionName" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="completeActionResponse">
+        <xsd:sequence>
+            <xsd:element name="success" type="xsd:boolean"/>
+            <xsd:element name="timestamp" type="xsd:dateTime"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="fault">
+        <xsd:sequence>
+            <xsd:element name="faultInfo" type="xsd:string"/>
+            <xsd:element name="faultMessage" type="xsd:string"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+
+    <!-- List of complexType used -->
+    <xsd:complexType name="Workflow">
+        <xsd:sequence>
+            <xsd:element name="name" type="tns:NameRestricted"/>
+            <xsd:element name="action" type="tns:Action" maxOccurs="unbounded"/>
+            <xsd:element name="process" type="tns:ProcessEl" maxOccurs="unbounded" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Action">
+        <xsd:sequence>
+            <xsd:element name="name" type="tns:NameRestricted"/>
+            <xsd:choice>
+                <xsd:element name="simple" type="tns:SimpleAction"/>
+                <xsd:element name="process" type="tns:ProcessAction"/>
+            </xsd:choice>
+        </xsd:sequence>
+        <xsd:attribute name="role" type="xsd:string" use="required"/>
+        <xsd:attribute name="autIns" type="xsd:boolean" use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="SimpleAction">
+        <xsd:sequence minOccurs="0">
+            <xsd:element name="nextAction" maxOccurs="unbounded">
+                <xsd:complexType>
+                    <xsd:attribute name="next" type="xsd:string" use="required"/>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="ProcessAction">
+        <xsd:attribute name="nextWorkflow" type="xsd:string"
+                       use="required"/>
+    </xsd:complexType>
+    <xsd:complexType name="ProcessEl">
+        <xsd:sequence>
+            <xsd:element name="id" type="tns:UUID-random"/>
+            <xsd:element name="startTime" type="xsd:dateTime"/>
+            <xsd:element name="status" type="tns:Status" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="Status">
+        <xsd:sequence>
+            <xsd:element name="actor" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="endTime" type="xsd:dateTime" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+        <xsd:attribute name="actionName" type="xsd:string" use="required"/>
+    </xsd:complexType>
+
+    <!-- http://lists.xml.org/archives/xml-dev/201003/msg00027.html for information -->
+    <xsd:simpleType name="UUID-random">
+        <xsd:restriction base="xsd:string">
+            <xsd:length value="36" fixed="true"/>
+            <xsd:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[8-9a-bA-B][0-9a-fA-F]{3}-[0-9a-fA-F]{12}"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <!-- Specifies a name without number and whitespace -->
+    <xsd:simpleType name="NameRestricted">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[a-zA-Z][a-zA-Z0-9]*"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>

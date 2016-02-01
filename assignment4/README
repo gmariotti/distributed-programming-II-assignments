@@ -1,0 +1,26 @@
+Distributed Programming II (A.Y. 2015/16)
+======================================================
+
+Assignment n. 4
+------------------------
+
+This archive contains:
+
+- README            This file
+
+- Assignment4a.pdf  The text of assignment 4 - Part a
+
+- Assignment4b.pdf  The text of assignment 4 - Part b
+
+- build.xml         Ant file to run server, client, and test programs
+
+- sol_build.xml     Ant file that you have to create to build server and client
+
+- custom		        A directory where you can put your customization binding files
+
+- lib               A directory containing the jars needed for this
+                    assignment
+
+- src               The directory where you must put your source code and where you find given source code
+
+- wsdl              The directory where you must put your WSDL files

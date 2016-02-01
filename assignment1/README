@@ -1,0 +1,31 @@
+Distributed Programming II (A.Y. 2015/16)
+======================================================
+
+Assignment n. 1
+------------------------
+
+This archive contains:
+
+- README            This file
+
+- Assignment1a.pdf  The text of assignment 1 - Part a
+
+- Assignment1b.pdf  The text of assignment 1 - Part b
+
+- intro.pdf         The intro to the topic of Assignments - A.Y. 2015/16
+
+- build.xml         Ant file to build and run your code
+
+- doc               A directory containing the Javadoc documentation
+                    of the interfaces used for the assignment
+
+- dtd               The directory where you must put your dtd file
+
+- lib               A directory containing of the jars needed for this
+                    assignment
+
+- src               The directory where you must put your code and where
+                    you can find the sources provided with the assignment
+
+- data				      The directory containing the data necessary for the
+					          assignment.

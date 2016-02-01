@@ -1,0 +1,36 @@
+<!ELEMENT information (workflows, processes)>
+    <!ELEMENT workflows (workflow*)>
+    <!ELEMENT workflow (action+)>
+    <!ATTLIST workflow
+        name    ID          #REQUIRED
+        >
+    <!ELEMENT action (simpleAc|processAc)>
+    <!ATTLIST action
+        name    NMTOKEN         #REQUIRED
+        role    NMTOKEN         #REQUIRED
+        autins  (true|false)    #REQUIRED
+        >
+    <!ELEMENT simpleAc EMPTY>
+    <!ATTLIST simpleAc
+        next    NMTOKENS   #IMPLIED
+        >
+    <!ELEMENT processAc EMPTY>
+    <!ATTLIST processAc
+        workflow    IDREF   #REQUIRED
+        >
+
+    <!-- if status is present, than somebody has taken it in charge -->
+    <!ELEMENT processes (process*)>
+    <!ELEMENT process (starttime, status+)>
+    <!ATTLIST process
+        workflow    IDREF   #REQUIRED
+        >
+
+    <!-- if endtime is present, than it means the action is terminated -->
+    <!ELEMENT status (endtime?)>
+    <!ATTLIST status
+        action  NMTOKEN       #REQUIRED
+        actor   NMTOKENS      #IMPLIED
+        >
+    <!ELEMENT endtime (#PCDATA)>
+    <!ELEMENT starttime (#PCDATA)>

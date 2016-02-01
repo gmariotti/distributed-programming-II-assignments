@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+
+<project basedir=".">
+
+	<property name="lab4.location" value="${basedir}" />
+	<property name="build.dir" value="${lab4.location}/build" />
+	<property name="src.dir" value="${lab4.location}/src" />
+    <property name="lib.dir" value="${lab4.location}/lib"/>
+    <property name="logs.dir" value="${lab4.location}/logs"/>
+    <property name="xml.dir" value="${logs.dir}/tmp"/>
+	<property name="wsdl.dir" value="${lab4.location}/wsdl" />
+	<property name="wsdl.file" value="${wsdl.dir}/Workflow.wsdl" />
+
+    <property name="URL.client1" value="http://localhost:7071/wfinfo"/>
+    <property name="WSDL.1" value="${URL.client1}?wsdl"/>
+    <property name="URL.client2" value="http://localhost:7070/wfcontrol"/>
+    <property name="WSDL.2" value="${URL.client2}?wsdl"/>
+    <property name="custom.file" location="${lab4.location}/custom/bindings.xml"/>
+
+    <property name="debug" value="true" />
+	<property name="debuglevel" value="source,lines,vars" />
+	<property name="target" value="1.7" />
+	<property name="source" value="1.7" />
+
+    <!-- The classpath to be used for compilation of the solution -->
+    <path id="sol.classpath">
+        <pathelement location="${lib.dir}/WF.jar"/>
+    </path>
+
+	<target name="build-server" depends="clean-wsdl-server, wsdl-server" description="Build Server">
+		<echo>Compiling code...</echo>
+        <mkdir dir="${logs.dir}"/>
+        <mkdir dir="${xml.dir}"/>
+        <copy file="${wsdl.dir}/schema.xsd" todir="${xml.dir}"/>
+		<javac destdir="${build.dir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+			<src path="${src.dir}" />
+			<include name="it/polito/dp2/WF/sol4/server/**" />
+			<include name="it/polito/dp2/WF/sol4/server/*.java" />
+            <classpath>
+                <path refid="sol.classpath" />
+            </classpath>
+		</javac>
+		<echo>Done...</echo>
+	</target>
+
+	<target name="wsdl-server" depends="set-custom-option" description="Build Server">
+		<echo>wsimport call for server...</echo>
+		<exec executable="wsimport" failonerror="true">
+            <arg line="${custom.option}"/>
+			<arg value="-d" />
+			<arg path="${build.dir}" />
+			<arg value="-s" />
+			<arg path="${src.dir}" />
+			<arg value="-keep" />
+			<arg value="-p" />
+			<arg value="it.polito.dp2.WF.sol4.server.wsdl" />
+			<arg file="${wsdl.file}" />
+		</exec>
+	</target>
+
+    <target name="build-client" depends="clean-wsdl-clients, build-client1, build-client2" description="Build Clients">
+        <echo>Compiled client1 and client2...</echo>
+    </target>
+
+    <target name="build-client1" depends="wsdl-client1" description="Build Client1">
+        <echo>Compiling client1...</echo>
+        <javac destdir="${build.dir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+            <src path="${src.dir}" />
+            <include name="it/polito/dp2/WF/sol4/client1/**" />
+            <include name="it/polito/dp2/WF/sol4/client1/*.java" />
+            <classpath>
+                <path refid="sol.classpath" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="wsdl-client1" depends="set-custom-option" description="Generate WSDL for client1">
+        <echo>wsimport call for client1...</echo>
+        <exec executable="wsimport" failonerror="true">
+            <arg line="${custom.option}"/>
+            <arg value="-d" />
+            <arg path="${build.dir}" />
+            <arg value="-s" />
+            <arg path="${src.dir}" />
+            <arg value="-keep" />
+            <arg value="-p" />
+            <arg value="it.polito.dp2.WF.sol4.client1.wsdl" />
+            <arg value="${WSDL.1}" />
+        </exec>
+    </target>
+
+    <target name="build-client2" depends="wsdl-client2" description="Build Client2">
+        <echo>Compiling client2...</echo>
+        <javac destdir="${build.dir}" debug="${debug}" debuglevel="${debuglevel}" source="${source}" target="${target}" includeantruntime="false">
+            <src path="${src.dir}" />
+            <include name="it/polito/dp2/WF/sol4/client2/**" />
+            <include name="it/polito/dp2/WF/sol4/client2/*.java" />
+            <classpath>
+                <path refid="sol.classpath" />
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="wsdl-client2" depends="set-custom-option" description="Generate WSDL for client2">
+        <echo>wsimport call for client2...</echo>
+        <exec executable="wsimport" failonerror="true">
+            <arg line="${custom.option}"/>
+            <arg value="-d" />
+            <arg path="${build.dir}" />
+            <arg value="-s" />
+            <arg path="${src.dir}" />
+            <arg value="-keep" />
+            <arg value="-p" />
+            <arg value="it.polito.dp2.WF.sol4.client2.wsdl" />
+            <arg value="${WSDL.2}" />
+        </exec>
+    </target>
+
+    <target name="chk-custom" description="Check customization bindings for clients">
+        <available property="customization.file.exists" file="${custom.file}"/>
+    </target>
+
+    <target name="set-custom-option" depends="chk-custom, reset-custom-option" if="customization.file.exists"
+            description="Set the custom option">
+        <property name="custom.option" value="-b ${custom.file}" />
+    </target>
+
+    <target name="reset-custom-option" depends="chk-custom" unless="customization.file.exists">
+        <property name="custom.option" value="" />
+    </target>
+
+    <target name="clean-wsdl-server" description="Clean generated files">
+        <delete dir="${src.dir}/it/polito/dp2/WF/sol4/server/wsdl" />
+    </target>
+
+    <target name="clean-wsdl-clients" description="Clean generated files">
+        <delete dir="${src.dir}/it/polito/dp2/WF/sol4/client1/wsdl" />
+        <delete dir="${src.dir}/it/polito/dp2/WF/sol4/client2/wsdl"/>
+    </target>
+
+    <target name="clean-logs" description="Cleans logs folder and tmpXML">
+        <delete dir="${logs.dir}"/>
+        <delete dir="${xml.dir}"/>
+    </target>
+
+</project>
